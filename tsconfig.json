@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
@@ -8,6 +9,33 @@
       ]
     }
   },
+=======
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "jsx": "react-native",
+    "lib": [
+      "DOM",
+      "ESNext"
+    ],
+    "moduleResolution": "node",
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "ESNext",
+    "strict": true,
+    "module": "esnext"
+  },
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.setup.js"
+  ],
+  "extends": "expo/tsconfig.base",
+>>>>>>> 986f5da (Adding The sign Up page and Fixing Errors)
   "include": [
     "**/*.ts",
     "**/*.tsx",
