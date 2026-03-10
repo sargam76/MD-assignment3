@@ -4,23 +4,26 @@ import { Link } from "expo-router";
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Form</Text>
+      <Text style={styles.title}> Form Assignment</Text>
+      <Text style={styles.subtitle}>
+        Choose a form screen below
+      </Text>
 
       <Link href="/employee" asChild>
         <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Go to Employee Form</Text>
+          <Text style={styles.buttonText}>Employee Information Form</Text>
         </Pressable>
       </Link>
 
       <Link href="/signin" asChild>
         <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Go to Sign In</Text>
+          <Text style={styles.buttonText}>Sign In Form</Text>
         </Pressable>
       </Link>
 
       <Link href="/signup" asChild>
         <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Go to Sign Up</Text>
+          <Text style={styles.buttonText}>Sign Up Form</Text>
         </Pressable>
       </Link>
     </View>
@@ -30,27 +33,39 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f8fafc",
     justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
+    paddingHorizontal: 24,
   },
   title: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: "bold",
-    marginBottom: 30,
+    textAlign: "center",
+    color: "#0f172a",
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: "center",
+    color: "#475569",
+    marginBottom: 35,
   },
   button: {
     backgroundColor: "#2563eb",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    marginVertical: 8,
-    width: 220,
-    alignItems: "center",
+    paddingVertical: 16,
+    paddingHorizontal: 18,
+    borderRadius: 14,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   buttonText: {
-    color: "white",
+    color: "#ffffff",
     fontSize: 16,
     fontWeight: "600",
+    textAlign: "center",
   },
 });
