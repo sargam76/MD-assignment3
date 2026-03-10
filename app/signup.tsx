@@ -2,8 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -16,8 +14,8 @@ import * as z from "zod";
 const signUpSchema = z
   .object({
     fullName: z.string().min(2, "Please enter your full name"),
-    email: z.string().email("That doesn't look like a valid email"),
-    password: z.string().min(8, "Password must be at least 8 characters long"),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -25,161 +23,151 @@ const signUpSchema = z
     path: ["confirmPassword"],
   });
 
-type SignUpFormData = z.infer<typeof signUpSchema>;
+type SignUpData = z.infer<typeof signUpSchema>;
 
 export default function SignUpScreen() {
-  const [activeInput, setActiveInput] = useState<string | null>(null);
+  const [focused, setFocused] = useState<string | null>(null);
 
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<SignUpFormData>({
+  } = useForm<SignUpData>({
     resolver: zodResolver(signUpSchema),
     mode: "onChange",
   });
 
-  const onRegister = (data: SignUpFormData) => {
-    console.log("Account Created!", data);
-    alert("Welcome to the team! Your account is ready.");
+  const onSubmit = (data: SignUpData) => {
+    alert("Success! Account created.");
+    console.log(data);
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.welcomeText}>Join Us! 🚀</Text>
-        <Text style={styles.subText}>Create an account to get started.</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.header}>Create Account</Text>
 
-        <View style={styles.fieldGroup}>
-          <Text style={styles.label}>Full Name</Text>
-          <Controller
-            control={control}
-            name="fullName"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={[
-                  styles.input,
-                  activeInput === "fullName" && styles.inputActive,
-                  errors.fullName && styles.inputError,
-                ]}
-                placeholder="John Doe"
-                onFocus={() => setActiveInput("fullName")}
-                onBlur={() => {
-                  setActiveInput(null);
-                  onBlur();
-                }}
-                onChangeText={onChange}
-                value={value}
-              />
+      <Controller
+        control={control}
+        name="fullName"
+        render={({ field: { onChange, value, onBlur } }) => (
+          <View style={styles.inputGroup}>
+            <TextInput
+              style={[
+                styles.input,
+                focused === "name" && styles.focused,
+                errors.fullName && styles.errorInput,
+              ]}
+              placeholder="Full Name"
+              onFocus={() => setFocused("name")}
+              onBlur={() => {
+                setFocused(null);
+                onBlur();
+              }}
+              onChangeText={onChange}
+              value={value}
+            />
+            {errors.fullName && (
+              <Text style={styles.errorText}>{errors.fullName.message}</Text>
             )}
-          />
-          {errors.fullName && (
-            <Text style={styles.errorLabel}>{errors.fullName.message}</Text>
-          )}
-        </View>
+          </View>
+        )}
+      />
 
-        <View style={styles.fieldGroup}>
-          <Text style={styles.label}>Email Address</Text>
-          <Controller
-            control={control}
-            name="email"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={[
-                  styles.input,
-                  activeInput === "email" && styles.inputActive,
-                  errors.email && styles.inputError,
-                ]}
-                placeholder="hello@example.com"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                onFocus={() => setActiveInput("email")}
-                onBlur={() => {
-                  setActiveInput(null);
-                  onBlur();
-                }}
-                onChangeText={onChange}
-                value={value}
-              />
+      <Controller
+        control={control}
+        name="email"
+        render={({ field: { onChange, value, onBlur } }) => (
+          <View style={styles.inputGroup}>
+            <TextInput
+              style={[
+                styles.input,
+                focused === "email" && styles.focused,
+                errors.email && styles.errorInput,
+              ]}
+              placeholder="Email"
+              onFocus={() => setFocused("email")}
+              onBlur={() => {
+                setFocused(null);
+                onBlur();
+              }}
+              onChangeText={onChange}
+              value={value}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            {errors.email && (
+              <Text style={styles.errorText}>{errors.email.message}</Text>
             )}
-          />
-          {errors.email && (
-            <Text style={styles.errorLabel}>{errors.email.message}</Text>
-          )}
-        </View>
+          </View>
+        )}
+      />
 
-        <View style={styles.fieldGroup}>
-          <Text style={styles.label}>Password</Text>
-          <Controller
-            control={control}
-            name="password"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={[
-                  styles.input,
-                  activeInput === "password" && styles.inputActive,
-                  errors.password && styles.inputError,
-                ]}
-                placeholder="Must be 8+ characters"
-                secureTextEntry
-                onFocus={() => setActiveInput("password")}
-                onBlur={() => {
-                  setActiveInput(null);
-                  onBlur();
-                }}
-                onChangeText={onChange}
-                value={value}
-              />
+      <Controller
+        control={control}
+        name="password"
+        render={({ field: { onChange, value, onBlur } }) => (
+          <View style={styles.inputGroup}>
+            <TextInput
+              style={[
+                styles.input,
+                focused === "pass" && styles.focused,
+                errors.password && styles.errorInput,
+              ]}
+              placeholder="Password (min 8 chars)"
+              onFocus={() => setFocused("pass")}
+              onBlur={() => {
+                setFocused(null);
+                onBlur();
+              }}
+              onChangeText={onChange}
+              value={value}
+              secureTextEntry
+            />
+            {errors.password && (
+              <Text style={styles.errorText}>{errors.password.message}</Text>
             )}
-          />
-          {errors.password && (
-            <Text style={styles.errorLabel}>{errors.password.message}</Text>
-          )}
-        </View>
+          </View>
+        )}
+      />
 
-        <View style={styles.fieldGroup}>
-          <Text style={styles.label}>Confirm Password</Text>
-          <Controller
-            control={control}
-            name="confirmPassword"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={[
-                  styles.input,
-                  activeInput === "confirmPassword" && styles.inputActive,
-                  errors.confirmPassword && styles.inputError,
-                ]}
-                placeholder="Repeat your password"
-                secureTextEntry
-                onFocus={() => setActiveInput("confirmPassword")}
-                onBlur={() => {
-                  setActiveInput(null);
-                  onBlur();
-                }}
-                onChangeText={onChange}
-                value={value}
-              />
+      <Controller
+        control={control}
+        name="confirmPassword"
+        render={({ field: { onChange, value, onBlur } }) => (
+          <View style={styles.inputGroup}>
+            <TextInput
+              style={[
+                styles.input,
+                focused === "confirm" && styles.focused,
+                errors.confirmPassword && styles.errorInput,
+              ]}
+              placeholder="Confirm Password"
+              onFocus={() => setFocused("confirm")}
+              onBlur={() => {
+                setFocused(null);
+                onBlur();
+              }}
+              onChangeText={onChange}
+              value={value}
+              secureTextEntry
+            />
+            {errors.confirmPassword && (
+              <Text style={styles.errorText}>
+                {errors.confirmPassword.message}
+              </Text>
             )}
-          />
-          {errors.confirmPassword && (
-            <Text style={styles.errorLabel}>
-              {errors.confirmPassword.message}
-            </Text>
-          )}
-        </View>
+          </View>
+        )}
+      />
 
-        <Pressable
-          style={[styles.button, !isValid && styles.buttonDisabled]}
-          onPress={handleSubmit(onRegister)}
-          disabled={!isValid}
-        >
-          <Text style={styles.buttonText}>Create My Account</Text>
-        </Pressable>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      <Pressable
+        style={[styles.button, !isValid && styles.buttonDisabled]}
+        onPress={handleSubmit(onSubmit)}
+        disabled={!isValid}
+      >
+        <Text style={styles.buttonText}>Register</Text>
+      </Pressable>
+    </ScrollView>
   );
 }
 
@@ -190,42 +178,30 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
   },
-  welcomeText: {
-    fontSize: 32,
+  header: {
+    fontSize: 28,
     fontWeight: "bold",
     color: "#0f172a",
-    marginBottom: 4,
+    marginBottom: 30,
+    textAlign: "center",
   },
-  subText: { fontSize: 16, color: "#64748b", marginBottom: 32 },
-  fieldGroup: { marginBottom: 20 },
-  label: { fontSize: 14, fontWeight: "600", color: "#475569", marginBottom: 8 },
+  inputGroup: { marginBottom: 16 },
   input: {
     backgroundColor: "#fff",
     padding: 16,
     borderRadius: 12,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: "#e2e8f0",
-    fontSize: 16,
   },
-  inputActive: { borderColor: "#2563eb", backgroundColor: "#fff" },
-  inputError: { borderColor: "#ef4444" },
-  errorLabel: {
-    color: "#ef4444",
-    fontSize: 12,
-    marginTop: 6,
-    fontWeight: "500",
-  },
+  focused: { borderColor: "#2563eb", borderWidth: 2 },
+  errorInput: { borderColor: "#ef4444" },
+  errorText: { color: "#ef4444", fontSize: 12, marginTop: 4 },
   button: {
     backgroundColor: "#2563eb",
     padding: 18,
     borderRadius: 12,
-    marginTop: 12,
+    marginTop: 10,
   },
-  buttonDisabled: { backgroundColor: "#cbd5e1" },
-  buttonText: {
-    color: "#fff",
-    textAlign: "center",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
+  buttonDisabled: { backgroundColor: "#94a3b8" },
+  buttonText: { color: "#fff", textAlign: "center", fontWeight: "bold" },
 });
